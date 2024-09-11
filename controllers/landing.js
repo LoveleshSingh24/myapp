@@ -43,5 +43,43 @@ module.exports = {
             console.error("Error retrieving lead:", error);
             res.status(500).send("An error occurred while retrieving the lead.");
         });
+    },
+    show_edit_lead: function(req, res, next) {
+        return models.Lead.findOne({
+            where: {
+                id: req.params.lead_id
+            }
+        })
+        .then(lead => {
+            if (lead) {
+                res.render('lead/edit_lead', { lead: lead });
+            } else {
+                res.status(404).send("Lead not found.");
+            }
+        })
+        .catch(error => {
+            console.error("Error retrieving lead:", error);
+            res.status(500).send("An error occurred while retrieving the lead.");
+        });
+    },
+    edit_lead: function(req, res, next) {
+        return models.Lead.update ({
+           email:req.body.lead_email
+        },{
+            where :{
+                id : req.params.lead_id
+            }
+        }).then(result => {
+            res.redirect('/lead/' + req.params.lead_id);
+        })
+    },
+    delete_lead:function(req,res,next){
+        return models.Lead.destroy({
+            where : {
+                id : req.params.lead_id
+            }
+        }).then(result =>{
+            res.redirect('/leads')
+        })
     }    
 };
